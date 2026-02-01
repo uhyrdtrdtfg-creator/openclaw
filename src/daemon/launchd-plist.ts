@@ -35,6 +35,21 @@ const renderEnvDict = (env: Record<string, string | undefined> | undefined): str
   return `\n    <key>EnvironmentVariables</key>\n    <dict>${items}\n    </dict>`;
 };
 
+export type ResourceLimits = {
+  numberOfFiles?: number;
+};
+
+const renderResourceLimits = (soft?: ResourceLimits, hard?: ResourceLimits): string => {
+  let xml = "";
+  if (soft?.numberOfFiles) {
+    xml += `\n    <key>SoftResourceLimits</key>\n    <dict>\n      <key>NumberOfFiles</key>\n      <integer>${soft.numberOfFiles}</integer>\n    </dict>`;
+  }
+  if (hard?.numberOfFiles) {
+    xml += `\n    <key>HardResourceLimits</key>\n    <dict>\n      <key>NumberOfFiles</key>\n      <integer>${hard.numberOfFiles}</integer>\n    </dict>`;
+  }
+  return xml;
+};
+
 export async function readLaunchAgentProgramArgumentsFromFile(plistPath: string): Promise<{
   programArguments: string[];
   workingDirectory?: string;
@@ -79,6 +94,9 @@ export async function readLaunchAgentProgramArgumentsFromFile(plistPath: string)
   }
 }
 
+/** Default max open files for gateway LaunchAgent (avoids EMFILE errors). */
+export const DEFAULT_MAX_OPEN_FILES = 555635;
+
 export function buildLaunchAgentPlist({
   label,
   comment,
@@ -87,6 +105,8 @@ export function buildLaunchAgentPlist({
   stdoutPath,
   stderrPath,
   environment,
+  softResourceLimits,
+  hardResourceLimits,
 }: {
   label: string;
   comment?: string;
@@ -95,6 +115,8 @@ export function buildLaunchAgentPlist({
   stdoutPath: string;
   stderrPath: string;
   environment?: Record<string, string | undefined>;
+  softResourceLimits?: ResourceLimits;
+  hardResourceLimits?: ResourceLimits;
 }): string {
   const argsXml = programArguments
     .map((arg) => `\n      <string>${plistEscape(arg)}</string>`)
@@ -106,5 +128,6 @@ export function buildLaunchAgentPlist({
     ? `\n    <key>Comment</key>\n    <string>${plistEscape(comment.trim())}</string>`
     : "";
   const envXml = renderEnvDict(environment);
-  return `<?xml version="1.0" encoding="UTF-8"?>\n<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">\n<plist version="1.0">\n  <dict>\n    <key>Label</key>\n    <string>${plistEscape(label)}</string>\n    ${commentXml}\n    <key>RunAtLoad</key>\n    <true/>\n    <key>KeepAlive</key>\n    <true/>\n    <key>ProgramArguments</key>\n    <array>${argsXml}\n    </array>\n    ${workingDirXml}\n    <key>StandardOutPath</key>\n    <string>${plistEscape(stdoutPath)}</string>\n    <key>StandardErrorPath</key>\n    <string>${plistEscape(stderrPath)}</string>${envXml}\n  </dict>\n</plist>\n`;
+  const resourceLimitsXml = renderResourceLimits(softResourceLimits, hardResourceLimits);
+  return `<?xml version="1.0" encoding="UTF-8"?>\n<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">\n<plist version="1.0">\n  <dict>\n    <key>Label</key>\n    <string>${plistEscape(label)}</string>\n    ${commentXml}\n    <key>RunAtLoad</key>\n    <true/>\n    <key>KeepAlive</key>\n    <true/>\n    <key>ProgramArguments</key>\n    <array>${argsXml}\n    </array>\n    ${workingDirXml}\n    <key>StandardOutPath</key>\n    <string>${plistEscape(stdoutPath)}</string>\n    <key>StandardErrorPath</key>\n    <string>${plistEscape(stderrPath)}</string>${envXml}${resourceLimitsXml}\n  </dict>\n</plist>\n`;
 }

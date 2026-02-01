@@ -12,7 +12,9 @@ import {
 } from "./constants.js";
 import {
   buildLaunchAgentPlist as buildLaunchAgentPlistImpl,
+  DEFAULT_MAX_OPEN_FILES,
   readLaunchAgentProgramArgumentsFromFile,
+  type ResourceLimits,
 } from "./launchd-plist.js";
 import { resolveGatewayStateDir, resolveHomeDir } from "./paths.js";
 import { parseKeyValueOutput } from "./runtime-parse.js";
@@ -81,6 +83,8 @@ export function buildLaunchAgentPlist({
   stdoutPath,
   stderrPath,
   environment,
+  softResourceLimits,
+  hardResourceLimits,
 }: {
   label?: string;
   comment?: string;
@@ -89,7 +93,11 @@ export function buildLaunchAgentPlist({
   stdoutPath: string;
   stderrPath: string;
   environment?: Record<string, string | undefined>;
+  softResourceLimits?: ResourceLimits;
+  hardResourceLimits?: ResourceLimits;
 }): string {
+  // Default to high file descriptor limits to avoid EMFILE errors
+  const defaultLimits: ResourceLimits = { numberOfFiles: DEFAULT_MAX_OPEN_FILES };
   return buildLaunchAgentPlistImpl({
     label,
     comment,
@@ -98,6 +106,8 @@ export function buildLaunchAgentPlist({
     stdoutPath,
     stderrPath,
     environment,
+    softResourceLimits: softResourceLimits ?? defaultLimits,
+    hardResourceLimits: hardResourceLimits ?? defaultLimits,
   });
 }
 

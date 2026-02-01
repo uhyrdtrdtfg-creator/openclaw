@@ -10,7 +10,9 @@ import {
   consumeGatewaySigusr1RestartAuthorization,
   isGatewaySigusr1RestartExternallyAllowed,
   markGatewaySigusr1RestartHandled,
+  scheduleGatewaySigusr1Restart,
 } from "../../infra/restart.js";
+import { startSpawnWatchdog, stopSpawnWatchdog } from "../../infra/spawn-watchdog.js";
 import { createSubsystemLogger } from "../../logging/subsystem.js";
 import {
   getActiveTaskCount,
@@ -19,6 +21,7 @@ import {
   waitForActiveTasks,
 } from "../../process/command-queue.js";
 import { createRestartIterationHook } from "../../process/restart-recovery.js";
+import { setEbadfRecoveryCallback } from "../../process/spawn-utils.js";
 import type { defaultRuntime } from "../../runtime.js";
 
 const gatewayLog = createSubsystemLogger("gateway");
@@ -200,6 +203,15 @@ export async function runGatewayLoop(params: {
   process.on("SIGINT", onSigint);
   process.on("SIGUSR1", onSigusr1);
 
+  // Register EBADF auto-recovery: trigger SIGUSR1 restart after consecutive EBADF errors
+  setEbadfRecoveryCallback(() => {
+    gatewayLog.warn("consecutive EBADF errors detected; scheduling automatic restart");
+    scheduleGatewaySigusr1Restart({ reason: "ebadf-auto-recovery", delayMs: 500 });
+  });
+
+  // Start spawn watchdog for health monitoring
+  startSpawnWatchdog();
+
   try {
     const onIteration = createRestartIterationHook(() => {
       // After an in-process restart (SIGUSR1), reset command-queue lane state.
@@ -248,5 +260,7 @@ export async function runGatewayLoop(params: {
   } finally {
     await releaseLockIfHeld();
     cleanupSignals();
+    setEbadfRecoveryCallback(null);
+    stopSpawnWatchdog();
   }
 }

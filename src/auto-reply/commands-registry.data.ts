@@ -551,6 +551,13 @@ function buildChatCommands(): ChatCommandDefinition[] {
       category: "session",
     }),
     defineChatCommand({
+      key: "forcenew",
+      nativeName: "forcenew",
+      description: "Force clear session without LLM (use when context overflow).",
+      textAlias: "/forcenew",
+      category: "session",
+    }),
+    defineChatCommand({
       key: "compact",
       nativeName: "compact",
       description: "Compact the session context.",

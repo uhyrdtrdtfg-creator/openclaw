@@ -1,5 +1,10 @@
+import crypto from "node:crypto";
+import fs from "node:fs";
+import { abortEmbeddedPiRun } from "../../agents/pi-embedded.js";
 import { parseDurationMs } from "../../cli/parse-duration.js";
 import { isRestartEnabled } from "../../config/commands.js";
+import type { SessionEntry } from "../../config/sessions.js";
+import { resolveSessionFilePath, updateSessionStore } from "../../config/sessions.js";
 import {
   formatThreadBindingDurationLabel,
   getThreadBindingManager,
@@ -11,6 +16,7 @@ import {
   setThreadBindingMaxAgeBySessionKey,
 } from "../../discord/monitor/thread-bindings.js";
 import { logVerbose } from "../../globals.js";
+import { createInternalHookEvent, triggerInternalHook } from "../../hooks/internal-hooks.js";
 import { getSessionBindingService } from "../../infra/outbound/session-binding-service.js";
 import type { SessionBindingRecord } from "../../infra/outbound/session-binding-service.js";
 import { scheduleGatewaySigusr1Restart, triggerOpenClawRestart } from "../../infra/restart.js";
@@ -26,6 +32,7 @@ import { normalizeUsageDisplay, resolveResponseUsageMode } from "../thinking.js"
 import { isDiscordSurface, isTelegramSurface, resolveChannelAccountId } from "./channel-context.js";
 import { handleAbortTrigger, handleStopCommand } from "./commands-session-abort.js";
 import { persistSessionEntry } from "./commands-session-store.js";
+import { clearSessionQueues } from "./queue.js";
 import type { CommandHandler } from "./commands-types.js";
 import { resolveTelegramConversationId } from "./telegram-context.js";
 
@@ -592,3 +599,73 @@ export const handleRestartCommand: CommandHandler = async (params, allowTextComm
 };
 
 export { handleAbortTrigger, handleStopCommand };
+
+/**
+ * Handle /forcenew command - clears session without calling LLM.
+ * Use this when context overflow prevents normal /new from working.
+ */
+export const handleForceNewCommand: CommandHandler = async (params, allowTextCommands) => {
+  if (!allowTextCommands) return null;
+  const normalized = params.command.commandBodyNormalized;
+  if (normalized !== "/forcenew" && normalized !== "/clearsession") return null;
+  if (!params.command.isAuthorizedSender) {
+    logVerbose(
+      `Ignoring /forcenew from unauthorized sender: ${params.command.senderId || "<unknown>"}`,
+    );
+    return { shouldContinue: false };
+  }
+
+  // Abort any running agent
+  if (params.sessionEntry?.sessionId) {
+    abortEmbeddedPiRun(params.sessionEntry.sessionId);
+  }
+
+  // Clear any queued messages
+  clearSessionQueues([params.sessionKey, params.sessionEntry?.sessionId]);
+
+  // Delete the session file if it exists
+  if (params.sessionEntry?.sessionId) {
+    const sessionFile = resolveSessionFilePath(params.sessionEntry.sessionId, params.sessionEntry);
+    if (sessionFile && fs.existsSync(sessionFile)) {
+      try {
+        fs.unlinkSync(sessionFile);
+        logVerbose(`Deleted session file: ${sessionFile}`);
+      } catch (err) {
+        logVerbose(
+          `Failed to delete session file: ${err instanceof Error ? err.message : String(err)}`,
+        );
+      }
+    }
+  }
+
+  // Reset the session entry with a new session ID
+  const newSessionId = crypto.randomUUID();
+  if (params.sessionEntry && params.sessionStore && params.sessionKey) {
+    params.sessionEntry.sessionId = newSessionId;
+    params.sessionEntry.sessionFile = undefined;
+    params.sessionEntry.systemSent = false;
+    params.sessionEntry.abortedLastRun = false;
+    params.sessionEntry.updatedAt = Date.now();
+    params.sessionStore[params.sessionKey] = params.sessionEntry;
+    if (params.storePath) {
+      await updateSessionStore(params.storePath, (store) => {
+        store[params.sessionKey] = params.sessionEntry as SessionEntry;
+      });
+    }
+  }
+
+  // Trigger internal hook
+  const hookEvent = createInternalHookEvent("command", "forcenew", params.sessionKey ?? "", {
+    sessionEntry: params.sessionEntry,
+    commandSource: params.command.surface,
+    senderId: params.command.senderId,
+  });
+  await triggerInternalHook(hookEvent);
+
+  return {
+    shouldContinue: false,
+    reply: {
+      text: `🧹 Session cleared (no LLM call). New session ID: ${newSessionId.slice(0, 8)}...`,
+    },
+  };
+};

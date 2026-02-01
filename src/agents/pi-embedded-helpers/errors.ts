@@ -178,6 +178,30 @@ export function isCompactionFailureError(errorMessage?: string): boolean {
   return lower.includes("context overflow");
 }
 
+/**
+ * Detects session state incompatibility errors that occur when switching between
+ * different API types (e.g., Anthropic messages API vs OpenAI responses API).
+ *
+ * These errors happen because:
+ * - OpenAI responses API uses `previous_response_id` for session continuity
+ * - Anthropic uses message history
+ * - When switching models with different APIs, the stored session state is incompatible
+ */
+export function isSessionStateIncompatibleError(errorMessage?: string): boolean {
+  if (!errorMessage) return false;
+  const lower = errorMessage.toLowerCase();
+  return (
+    // OpenAI responses API: item not found (previous_response_id invalid)
+    (lower.includes("item with id") && lower.includes("not found")) ||
+    lower.includes("items are not persisted") ||
+    lower.includes("previous_response_id") ||
+    // Generic session state errors
+    (lower.includes("400") && lower.includes("internal server error")) ||
+    // Anthropic: invalid message format from different API
+    (lower.includes("invalid") && lower.includes("message") && lower.includes("format"))
+  );
+}
+
 const ERROR_PAYLOAD_PREFIX_RE =
   /^(?:error|api\s*error|apierror|openai\s*error|anthropic\s*error|gateway\s*error)[:\s-]+/i;
 const FINAL_TAG_RE = /<\s*\/?\s*final\s*>/gi;
@@ -864,6 +888,22 @@ export function isImageSizeError(errorMessage?: string): boolean {
   return Boolean(parseImageSizeError(errorMessage));
 }
 
+/**
+ * Detects streaming errors that occur when the LLM request ends prematurely
+ * without sending any response chunks. These errors should trigger model fallback.
+ */
+export function isStreamingError(errorMessage?: string): boolean {
+  if (!errorMessage) return false;
+  const lower = errorMessage.toLowerCase();
+  return (
+    lower.includes("request ended without sending any chunks") ||
+    lower.includes("stream ended unexpectedly") ||
+    lower.includes("stream interrupted") ||
+    lower.includes("empty response") ||
+    (lower.includes("connection") && lower.includes("closed") && lower.includes("stream"))
+  );
+}
+
 export function isCloudCodeAssistFormatError(raw: string): boolean {
   return !isImageDimensionErrorMessage(raw) && matchesFormatErrorPattern(raw);
 }
@@ -979,6 +1019,9 @@ export function classifyFailoverReason(raw: string): FailoverReason | null {
   }
   if (isAuthErrorMessage(raw)) {
     return "auth";
+  }
+  if (isStreamingError(raw)) {
+    return "unknown";
   }
   return null;
 }

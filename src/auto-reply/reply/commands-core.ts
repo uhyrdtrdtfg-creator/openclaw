@@ -26,6 +26,7 @@ import { handlePluginCommand } from "./commands-plugin.js";
 import {
   handleAbortTrigger,
   handleActivationCommand,
+  handleForceNewCommand,
   handleRestartCommand,
   handleSessionCommand,
   handleSendPolicyCommand,
@@ -168,9 +169,12 @@ function resolveSessionEntryForHookSessionKey(
   return undefined;
 }
 
+
 export async function handleCommands(params: HandleCommandsParams): Promise<CommandHandlerResult> {
   if (HANDLERS === null) {
     HANDLERS = [
+      // Force new/clear session - must be first to work even when context is broken
+      handleForceNewCommand,
       // Plugin commands are processed first, before built-in commands
       handlePluginCommand,
       handleBashCommand,

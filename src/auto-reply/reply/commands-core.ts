@@ -24,6 +24,7 @@ import { handlePluginCommand } from "./commands-plugin.js";
 import {
   handleAbortTrigger,
   handleActivationCommand,
+  handleForceNewCommand,
   handleRestartCommand,
   handleSendPolicyCommand,
   handleStopCommand,
@@ -34,10 +35,11 @@ import { handleTtsCommands } from "./commands-tts.js";
 import { routeReply } from "./route-reply.js";
 
 let HANDLERS: CommandHandler[] | null = null;
-
 export async function handleCommands(params: HandleCommandsParams): Promise<CommandHandlerResult> {
   if (HANDLERS === null) {
     HANDLERS = [
+      // Force new/clear session - must be first to work even when context is broken
+      handleForceNewCommand,
       // Plugin commands are processed first, before built-in commands
       handlePluginCommand,
       handleBashCommand,

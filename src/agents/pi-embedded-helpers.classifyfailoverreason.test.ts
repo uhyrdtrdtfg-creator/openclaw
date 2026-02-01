@@ -38,4 +38,13 @@ describe("classifyFailoverReason", () => {
       "rate_limit",
     );
   });
+
+  it("classifies streaming errors as unknown for fallback", () => {
+    expect(classifyFailoverReason("request ended without sending any chunks")).toBe("unknown");
+    expect(classifyFailoverReason("Request ended without sending any chunks")).toBe("unknown");
+    expect(classifyFailoverReason("stream ended unexpectedly")).toBe("unknown");
+    expect(classifyFailoverReason("stream interrupted")).toBe("unknown");
+    expect(classifyFailoverReason("empty response")).toBe("unknown");
+    expect(classifyFailoverReason("connection closed during stream")).toBe("unknown");
+  });
 });

@@ -39,6 +39,7 @@ import {
   parseImageSizeError,
   parseImageDimensionError,
   isRateLimitAssistantError,
+  isSessionStateIncompatibleError,
   isTimeoutErrorMessage,
   pickFallbackThinkingLevel,
   type FailoverReason,
@@ -304,6 +305,7 @@ export async function runEmbeddedPiAgent(
       }
 
       let overflowCompactionAttempted = false;
+      let sessionStateResetAttempted = false;
       try {
         while (true) {
           attemptedThinking.add(thinkLevel);
@@ -451,6 +453,19 @@ export async function runEmbeddedPiAgent(
                   error: { kind: "role_ordering", message: errorText },
                 },
               };
+            }
+            // Handle session state incompatibility (e.g., switching between Anthropic and OpenAI APIs)
+            if (isSessionStateIncompatibleError(errorText) && !sessionStateResetAttempted) {
+              sessionStateResetAttempted = true;
+              log.warn(
+                `session state incompatible with ${provider}/${modelId}; clearing session and retrying`,
+              );
+              try {
+                await fs.writeFile(params.sessionFile, "", "utf-8");
+                continue;
+              } catch {
+                log.warn(`failed to clear session file for ${provider}/${modelId}`);
+              }
             }
             // Handle image size errors with a user-friendly message (no retry needed)
             const imageSizeError = parseImageSizeError(errorText);

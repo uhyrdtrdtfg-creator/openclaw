@@ -2,6 +2,20 @@
 
 Docs: https://docs.openclaw.ai
 
+## 2026.2.1
+
+### Changes
+
+- Memory: add configurable `watchIgnore` for memory file watcher. Supports regex patterns, specific paths, and a default ignore list (`.git`, `node_modules`, `.venv`, `__pycache__`, etc.) to reduce file descriptor usage.
+- CLI: add `/forcenew` command to force-create a new session.
+- macOS: add log watchdog LaunchAgent for automatic EBADF recovery.
+- Gateway: add EBADF auto-recovery and spawn watchdog for improved stability.
+
+### Fixes
+
+- TUI: prevent crash when searching with digits in model selector.
+- Agents: update `cacheControlTtl` to `cacheRetention` for pi-ai 0.50.9 compatibility.
+
 ## 2026.1.31
 
 ### Changes

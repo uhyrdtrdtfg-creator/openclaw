@@ -48,6 +48,10 @@ export type ResolvedMemorySearchConfig = {
     onSearch: boolean;
     watch: boolean;
     watchDebounceMs: number;
+    watchIgnore: {
+      patterns: RegExp[];
+      paths: string[];
+    };
     intervalMinutes: number;
     sessions: {
       deltaBytes: number;
@@ -85,6 +89,23 @@ const DEFAULT_HYBRID_TEXT_WEIGHT = 0.3;
 const DEFAULT_HYBRID_CANDIDATE_MULTIPLIER = 4;
 const DEFAULT_CACHE_ENABLED = true;
 const DEFAULT_SOURCES: Array<"memory" | "sessions"> = ["memory"];
+
+/** Default ignore patterns for memory watcher to reduce file descriptor usage. */
+export const DEFAULT_MEMORY_WATCH_IGNORED: RegExp[] = [
+  /(^|[\\/])\.git([\\/]|$)/,
+  /(^|[\\/])node_modules([\\/]|$)/,
+  /(^|[\\/])dist([\\/]|$)/,
+  /(^|[\\/])\.venv([\\/]|$)/,
+  /(^|[\\/])venv([\\/]|$)/,
+  /(^|[\\/])__pycache__([\\/]|$)/,
+  /(^|[\\/])\.mypy_cache([\\/]|$)/,
+  /(^|[\\/])\.pytest_cache([\\/]|$)/,
+  /(^|[\\/])\.cache([\\/]|$)/,
+  /(^|[\\/])\.next([\\/]|$)/,
+  /(^|[\\/])\.nuxt([\\/]|$)/,
+  /(^|[\\/])build([\\/]|$)/,
+  /(^|[\\/])\.turbo([\\/]|$)/,
+];
 
 function normalizeSources(
   sources: Array<"memory" | "sessions"> | undefined,
@@ -188,6 +209,28 @@ function mergeConfig(
     tokens: overrides?.chunking?.tokens ?? defaults?.chunking?.tokens ?? DEFAULT_CHUNK_TOKENS,
     overlap: overrides?.chunking?.overlap ?? defaults?.chunking?.overlap ?? DEFAULT_CHUNK_OVERLAP,
   };
+  // Resolve watchIgnore configuration
+  const useDefaults =
+    overrides?.sync?.watchIgnore?.useDefaults ?? defaults?.sync?.watchIgnore?.useDefaults ?? true;
+  const patternStrings = [
+    ...(defaults?.sync?.watchIgnore?.patterns ?? []),
+    ...(overrides?.sync?.watchIgnore?.patterns ?? []),
+  ];
+  const watchIgnorePatterns: RegExp[] = useDefaults ? [...DEFAULT_MEMORY_WATCH_IGNORED] : [];
+  for (const patternStr of patternStrings) {
+    try {
+      watchIgnorePatterns.push(new RegExp(patternStr));
+    } catch {
+      // Invalid regex pattern, skip silently
+    }
+  }
+  const watchIgnorePaths = Array.from(
+    new Set([
+      ...(defaults?.sync?.watchIgnore?.paths ?? []),
+      ...(overrides?.sync?.watchIgnore?.paths ?? []),
+    ]),
+  );
+
   const sync = {
     onSessionStart: overrides?.sync?.onSessionStart ?? defaults?.sync?.onSessionStart ?? true,
     onSearch: overrides?.sync?.onSearch ?? defaults?.sync?.onSearch ?? true,
@@ -196,6 +239,10 @@ function mergeConfig(
       overrides?.sync?.watchDebounceMs ??
       defaults?.sync?.watchDebounceMs ??
       DEFAULT_WATCH_DEBOUNCE_MS,
+    watchIgnore: {
+      patterns: watchIgnorePatterns,
+      paths: watchIgnorePaths,
+    },
     intervalMinutes: overrides?.sync?.intervalMinutes ?? defaults?.sync?.intervalMinutes ?? 0,
     sessions: {
       deltaBytes:

@@ -871,6 +871,7 @@ export class MemoryIndexManager {
         stabilityThreshold: this.settings.sync.watchDebounceMs,
         pollInterval: 100,
       },
+      ignored: this.buildIgnoredOption(),
     });
     const markDirty = () => {
       this.dirty = true;
@@ -879,6 +880,27 @@ export class MemoryIndexManager {
     this.watcher.on("add", markDirty);
     this.watcher.on("change", markDirty);
     this.watcher.on("unlink", markDirty);
+  }
+
+  private buildIgnoredOption(): Array<RegExp | ((filePath: string) => boolean)> {
+    const { patterns, paths } = this.settings.sync.watchIgnore;
+    const ignored: Array<RegExp | ((filePath: string) => boolean)> = [...patterns];
+
+    if (paths.length > 0) {
+      const normalizedPaths = paths.map((p) =>
+        path.isAbsolute(p) ? p : path.resolve(this.workspaceDir, p),
+      );
+      ignored.push((filePath: string) => {
+        for (const ignorePath of normalizedPaths) {
+          if (filePath === ignorePath || filePath.startsWith(`${ignorePath}${path.sep}`)) {
+            return true;
+          }
+        }
+        return false;
+      });
+    }
+
+    return ignored;
   }
 
   private ensureSessionListener() {

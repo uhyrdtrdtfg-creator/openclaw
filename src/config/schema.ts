@@ -242,6 +242,10 @@ const FIELD_LABELS: Record<string, string> = {
   "agents.defaults.memorySearch.sync.onSearch": "Index on Search (Lazy)",
   "agents.defaults.memorySearch.sync.watch": "Watch Memory Files",
   "agents.defaults.memorySearch.sync.watchDebounceMs": "Memory Watch Debounce (ms)",
+  "agents.defaults.memorySearch.sync.watchIgnore": "Memory Watch Ignore",
+  "agents.defaults.memorySearch.sync.watchIgnore.patterns": "Memory Watch Ignore Patterns",
+  "agents.defaults.memorySearch.sync.watchIgnore.paths": "Memory Watch Ignore Paths",
+  "agents.defaults.memorySearch.sync.watchIgnore.useDefaults": "Use Default Ignore Patterns",
   "agents.defaults.memorySearch.sync.sessions.deltaBytes": "Session Delta Bytes",
   "agents.defaults.memorySearch.sync.sessions.deltaMessages": "Session Delta Messages",
   "agents.defaults.memorySearch.query.maxResults": "Memory Search Max Results",
@@ -547,6 +551,14 @@ const FIELD_HELP: Record<string, string> = {
   "agents.defaults.memorySearch.sync.onSearch":
     "Lazy sync: schedule a reindex on search after changes.",
   "agents.defaults.memorySearch.sync.watch": "Watch memory files for changes (chokidar).",
+  "agents.defaults.memorySearch.sync.watchIgnore":
+    "Configure which files and directories to ignore when watching for memory changes.",
+  "agents.defaults.memorySearch.sync.watchIgnore.patterns":
+    "Regex patterns (as strings) to ignore. Example: '(^|[\\\\/])\\\\.custom([\\\\/]|$)'.",
+  "agents.defaults.memorySearch.sync.watchIgnore.paths":
+    "Specific file or directory paths to ignore (relative paths resolved from workspace).",
+  "agents.defaults.memorySearch.sync.watchIgnore.useDefaults":
+    "Include default ignore patterns (.git, node_modules, dist, .venv, __pycache__, etc.). Default: true.",
   "agents.defaults.memorySearch.sync.sessions.deltaBytes":
     "Minimum appended bytes before session transcripts trigger reindex (default: 100000).",
   "agents.defaults.memorySearch.sync.sessions.deltaMessages":

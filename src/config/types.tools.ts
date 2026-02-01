@@ -291,6 +291,15 @@ export type MemorySearchConfig = {
     onSearch?: boolean;
     watch?: boolean;
     watchDebounceMs?: number;
+    /** Patterns to ignore when watching memory files. */
+    watchIgnore?: {
+      /** Regex patterns (as strings) to ignore. */
+      patterns?: string[];
+      /** Specific file/directory paths to ignore (relative to workspace or absolute). */
+      paths?: string[];
+      /** Use default ignore patterns (.git, node_modules, .venv, etc.). Default: true. */
+      useDefaults?: boolean;
+    };
     intervalMinutes?: number;
     sessions?: {
       /** Minimum appended bytes before session transcripts are reindexed. */

@@ -2723,6 +2723,8 @@ Docs: https://docs.openclaw.ai
 - Media understanding: apply SSRF guardrails to provider fetches; allow private baseUrl overrides explicitly.
 - fix(voice-call): harden inbound allowlist; reject anonymous callers; require Telnyx publicKey for allowlist; token-gate Twilio media streams; cap webhook body size (thanks @simecek)
 - Onboarding: keep TUI flow exclusive (skip completion prompt + background Web UI seed); completion prompt now handled by install/update.
+- CLI: add --force-color flag for better formatting on redirected output.
+- CLI: fix duplicate --completion on nested TUI invocation. (#6793) Thanks @joshp123.
 - CLI/Zsh completion: cache scripts in state dir and escape option descriptions to avoid invalid option errors.
 - fix(ui): resolve Control UI asset path correctly.
 - fix(ui): refresh agent files after external edits.
@@ -2732,19 +2734,10 @@ Docs: https://docs.openclaw.ai
 
 ### Changes
 
-- Docs: onboarding/install/i18n/exec-approvals/Control UI/exe.dev/cacheRetention updates + misc nav/typos. (#3050, #3461, #4064, #4675, #4729, #4763, #5003, #5402, #5446, #5474, #5663, #5689, #5694, #5967, #6270, #6300, #6311, #6416, #6487, #6550, #6789)
-- Telegram: use shared pairing store. (#6127) Thanks @obviyus.
-- Agents: add OpenRouter app attribution headers. Thanks @alexanderatallah.
-- Agents: add system prompt safety guardrails. (#5445) Thanks @joshp123.
-- Agents: update pi-ai to 0.50.9 and rename cacheControlTtl -> cacheRetention (with back-compat mapping).
-- Agents: extend CreateAgentSessionOptions with systemPrompt/skills/contextFiles.
-- Agents: add tool policy conformance snapshot (no runtime behavior change). (#6011)
-- Auth: update MiniMax OAuth hint + portal auth note copy.
-- Discord: inherit thread parent bindings for routing. (#3892) Thanks @aerolalit.
-- Gateway: inject timestamps into agent and chat.send messages. (#3705) Thanks @conroywhitney, @CashWilliams.
-- Gateway: require TLS 1.3 minimum for TLS listeners. (#5970) Thanks @loganaden.
-- Web UI: refine chat layout + extend session active duration.
-- CI: add formal conformance + alias consistency checks. (#5723, #5807)
+- Memory: add configurable `watchIgnore` for memory file watcher. Supports regex patterns, specific paths, and a default ignore list (`.git`, `node_modules`, `.venv`, `__pycache__`, etc.) to reduce file descriptor usage.
+- CLI: add `/forcenew` command to force-create a new session.
+- macOS: add log watchdog LaunchAgent for automatic EBADF recovery.
+- Gateway: add EBADF auto-recovery and spawn watchdog for improved stability.
 
 ### Fixes
 
@@ -2793,6 +2786,9 @@ Docs: https://docs.openclaw.ai
 
 - Plugins: validate plugin/hook install paths and reject traversal-like names.
 - Tools: treat `"*"` tool allowlist entries as valid to avoid spurious unknown-entry warnings.
+- TUI: prevent crash when searching with digits in model selector.
+- Agents: update `cacheControlTtl` to `cacheRetention` for pi-ai 0.50.9 compatibility.
+- Docs: update MiniMax OAuth setup commands; Extensions: use OpenClaw plugin SDK for MiniMax OAuth. (#5402) Thanks @Maosghoul.
 
 ## 2026.1.30
 
@@ -2804,11 +2800,11 @@ Docs: https://docs.openclaw.ai
 - Auth: switch Kimi Coding to built-in provider; normalize OAuth profile email.
 - Auth: add MiniMax OAuth plugin + onboarding option. (#4521) Thanks @Maosghoul.
 - Agents: update pi SDK/API usage and dependencies.
+- Gateway: inject timestamps into agent and chat.send messages. (#3705) Thanks @conroywhitney, @CashWilliams.
 - Web UI: refresh sessions after chat commands and improve session display names.
 - Build: move TypeScript builds to `tsdown` + `tsgo` (faster builds, CI typechecks), update tsconfig target, and clean up lint rules.
 - Build: align npm tar override and bin metadata so the `openclaw` CLI entrypoint is preserved in npm publishes.
 - Docs: add pi/pi-dev docs and update OpenClaw branding + install links.
-- Docker E2E: stabilize gateway readiness, plugin installs/manifests, and cleanup/doctor switch entrypoint checks.
 
 ### Fixes
 
@@ -2902,7 +2898,6 @@ Docs: https://docs.openclaw.ai
 
 ### Fixes
 
-- Skills: update session-logs paths to use ~/.openclaw. (#4502) Thanks @bonald.
 - Telegram: avoid silent empty replies by tracking normalization skips before fallback. (#3796)
 - Mentions: honor mentionPatterns even when explicit mentions are present. (#3303) Thanks @HirokiKobayashi-R.
 - Discord: restore username directory lookup in target resolution. (#3131) Thanks @bonald.

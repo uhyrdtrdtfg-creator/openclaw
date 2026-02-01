@@ -204,6 +204,26 @@ export function printDaemonStatus(status: DaemonStatus, opts: { json: boolean })
     spacer();
   }
 
+  // Display log watchdog status (macOS only)
+  if (status.logWatchdog) {
+    const loadedText = status.logWatchdog.loaded ? okText("loaded") : warnText("not loaded");
+    defaultRuntime.log(`${label("Log Watchdog:")} LaunchAgent (${loadedText})`);
+
+    if (status.logWatchdog.runtime?.pid) {
+      defaultRuntime.log(
+        `  ${label("Status:")} ${okText("running")} (pid ${status.logWatchdog.runtime.pid})`,
+      );
+    } else if (status.logWatchdog.loaded && status.logWatchdog.runtime?.status === "stopped") {
+      defaultRuntime.log(`  ${label("Status:")} ${warnText("stopped")}`);
+    }
+    if (status.logWatchdog.stats?.totalRestarts) {
+      defaultRuntime.log(
+        `  ${label("Restarts triggered:")} ${infoText(String(status.logWatchdog.stats.totalRestarts))}`,
+      );
+    }
+    spacer();
+  }
+
   const systemdUnavailable =
     process.platform === "linux" && isSystemdUnavailableDetail(service.runtime?.detail);
   if (systemdUnavailable) {

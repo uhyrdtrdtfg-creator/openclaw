@@ -14,6 +14,11 @@ export const LEGACY_GATEWAY_LAUNCH_AGENT_LABELS: string[] = [];
 export const LEGACY_GATEWAY_SYSTEMD_SERVICE_NAMES: string[] = [];
 export const LEGACY_GATEWAY_WINDOWS_TASK_NAMES: string[] = [];
 
+// Log watchdog constants (macOS only)
+export const LOG_WATCHDOG_LAUNCH_AGENT_LABEL = "ai.openclaw.log-watchdog";
+export const LOG_WATCHDOG_SCRIPT_NAME = "log-watchdog.sh";
+export const LOG_WATCHDOG_STATS_FILE = "watchdog-stats.json";
+
 export function normalizeGatewayProfile(profile?: string): string | null {
   const trimmed = profile?.trim();
   if (!trimmed || trimmed.toLowerCase() === "default") {
@@ -93,4 +98,12 @@ export function formatNodeServiceDescription(params?: { version?: string }): str
     return "OpenClaw Node Host";
   }
   return `OpenClaw Node Host (v${version})`;
+}
+
+export function resolveLogWatchdogLaunchAgentLabel(profile?: string): string {
+  const normalized = normalizeGatewayProfile(profile);
+  if (!normalized) {
+    return LOG_WATCHDOG_LAUNCH_AGENT_LABEL;
+  }
+  return `ai.openclaw.${normalized}.log-watchdog`;
 }

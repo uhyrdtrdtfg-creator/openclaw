@@ -42,6 +42,16 @@ export async function runDaemonUninstall(opts: DaemonLifecycleOptions = {}) {
     return;
   }
 
+  // Uninstall log watchdog first (macOS only)
+  if (process.platform === "darwin") {
+    try {
+      const { uninstallLogWatchdog } = await import("../../daemon/log-watchdog.js");
+      await uninstallLogWatchdog({ env: process.env, stdout });
+    } catch {
+      // Best-effort uninstall
+    }
+  }
+
   const service = resolveGatewayService();
   let loaded = false;
   try {

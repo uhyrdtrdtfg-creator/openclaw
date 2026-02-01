@@ -1,6 +1,8 @@
 import type { GatewayBindMode, GatewayControlUiConfig } from "../../config/types.js";
 import type { FindExtraGatewayServicesOptions } from "../../daemon/inspect.js";
+import type { LogWatchdogStats } from "../../daemon/log-watchdog.js";
 import type { ServiceConfigAudit } from "../../daemon/service-audit.js";
+import type { GatewayServiceRuntime } from "../../daemon/service-runtime.js";
 import type { GatewayRpcOpts } from "./types.js";
 import {
   createConfigIO,
@@ -93,6 +95,11 @@ export type DaemonStatus = {
     url?: string;
   };
   extraServices: Array<{ label: string; detail: string; scope: string }>;
+  logWatchdog?: {
+    loaded: boolean;
+    runtime?: GatewayServiceRuntime;
+    stats?: LogWatchdogStats;
+  };
 };
 
 function shouldReportPortUsage(status: PortUsageStatus | undefined, rpcOk?: boolean) {
@@ -242,6 +249,27 @@ export async function gatherDaemonStatus(
     lastError = (await readLastGatewayErrorLine(mergedDaemonEnv as NodeJS.ProcessEnv)) ?? undefined;
   }
 
+  // Gather log watchdog status (macOS only)
+  let logWatchdog: DaemonStatus["logWatchdog"];
+  if (process.platform === "darwin") {
+    try {
+      const { isLogWatchdogLoaded, readLogWatchdogRuntime, readLogWatchdogStats } =
+        await import("../../daemon/log-watchdog.js");
+      const watchdogLoaded = await isLogWatchdogLoaded(process.env);
+      const watchdogRuntime = watchdogLoaded
+        ? await readLogWatchdogRuntime(process.env)
+        : undefined;
+      const watchdogStats = await readLogWatchdogStats(process.env);
+      logWatchdog = {
+        loaded: watchdogLoaded,
+        runtime: watchdogRuntime,
+        stats: watchdogStats ?? undefined,
+      };
+    } catch {
+      // Log watchdog not available
+    }
+  }
+
   return {
     service: {
       label: service.label,
@@ -271,6 +299,7 @@ export async function gatherDaemonStatus(
     lastError,
     ...(rpc ? { rpc: { ...rpc, url: probeUrl } } : {}),
     extraServices,
+    logWatchdog,
   };
 }
 

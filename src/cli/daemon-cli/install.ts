@@ -121,6 +121,16 @@ export async function runDaemonInstall(opts: DaemonInstallOptions) {
     return;
   }
 
+  // Install log watchdog (macOS only)
+  if (process.platform === "darwin") {
+    try {
+      const { installLogWatchdog } = await import("../../daemon/log-watchdog.js");
+      await installLogWatchdog({ env: process.env, stdout });
+    } catch (err) {
+      warnings.push(`Log watchdog install failed: ${String(err)}`);
+    }
+  }
+
   let installed = true;
   try {
     installed = await service.isLoaded({ env: process.env });

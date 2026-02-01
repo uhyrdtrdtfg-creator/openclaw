@@ -9,6 +9,7 @@ Docs: https://docs.openclaw.ai
 - Memory: add configurable `watchIgnore` for memory file watcher. Supports regex patterns, specific paths, and a default ignore list (`.git`, `node_modules`, `.venv`, `__pycache__`, etc.) to reduce file descriptor usage.
 - CLI: add `/forcenew` command to force-create a new session.
 - macOS: add log watchdog LaunchAgent for automatic EBADF recovery.
+- macOS: set max open files to 555635 in LaunchAgent plist to prevent EMFILE errors.
 - Gateway: add EBADF auto-recovery and spawn watchdog for improved stability.
 
 ### Fixes

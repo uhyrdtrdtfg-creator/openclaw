@@ -49,9 +49,15 @@ async function main() {
     { setGatewayWsLogStyle },
     { setVerbose },
     { acquireGatewayLock, GatewayLockError },
-    { consumeGatewaySigusr1RestartAuthorization, isGatewaySigusr1RestartExternallyAllowed },
+    {
+      consumeGatewaySigusr1RestartAuthorization,
+      isGatewaySigusr1RestartExternallyAllowed,
+      scheduleGatewaySigusr1Restart,
+    },
     { defaultRuntime },
     { enableConsoleCapture, setConsoleTimestampPrefix },
+    { setEbadfRecoveryCallback },
+    { startSpawnWatchdog, stopSpawnWatchdog },
   ] = await Promise.all([
     import("../config/config.js"),
     import("../gateway/server.js"),
@@ -61,6 +67,8 @@ async function main() {
     import("../infra/restart.js"),
     import("../runtime.js"),
     import("../logging.js"),
+    import("../process/spawn-utils.js"),
+    import("../infra/spawn-watchdog.js"),
   ] as const);
 
   enableConsoleCapture();
@@ -186,6 +194,15 @@ async function main() {
   process.on("SIGINT", onSigint);
   process.on("SIGUSR1", onSigusr1);
 
+  // Register EBADF auto-recovery: trigger SIGUSR1 restart after consecutive EBADF errors
+  setEbadfRecoveryCallback(() => {
+    defaultRuntime.log("gateway: consecutive EBADF errors detected; scheduling automatic restart");
+    scheduleGatewaySigusr1Restart({ reason: "ebadf-auto-recovery", delayMs: 500 });
+  });
+
+  // Start spawn watchdog for health monitoring
+  startSpawnWatchdog();
+
   try {
     try {
       lock = await acquireGatewayLock();
@@ -212,6 +229,8 @@ async function main() {
   } finally {
     await (lock as GatewayLockHandle | null)?.release();
     cleanupSignals();
+    setEbadfRecoveryCallback(null);
+    stopSpawnWatchdog();
   }
 }
 

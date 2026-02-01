@@ -4,8 +4,11 @@ import { acquireGatewayLock } from "../../infra/gateway-lock.js";
 import {
   consumeGatewaySigusr1RestartAuthorization,
   isGatewaySigusr1RestartExternallyAllowed,
+  scheduleGatewaySigusr1Restart,
 } from "../../infra/restart.js";
+import { startSpawnWatchdog, stopSpawnWatchdog } from "../../infra/spawn-watchdog.js";
 import { createSubsystemLogger } from "../../logging/subsystem.js";
+import { setEbadfRecoveryCallback } from "../../process/spawn-utils.js";
 
 const gatewayLog = createSubsystemLogger("gateway");
 
@@ -87,6 +90,15 @@ export async function runGatewayLoop(params: {
   process.on("SIGINT", onSigint);
   process.on("SIGUSR1", onSigusr1);
 
+  // Register EBADF auto-recovery: trigger SIGUSR1 restart after consecutive EBADF errors
+  setEbadfRecoveryCallback(() => {
+    gatewayLog.warn("consecutive EBADF errors detected; scheduling automatic restart");
+    scheduleGatewaySigusr1Restart({ reason: "ebadf-auto-recovery", delayMs: 500 });
+  });
+
+  // Start spawn watchdog for health monitoring
+  startSpawnWatchdog();
+
   try {
     // Keep process alive; SIGUSR1 triggers an in-process restart (no supervisor required).
     // SIGTERM/SIGINT still exit after a graceful shutdown.
@@ -100,5 +112,7 @@ export async function runGatewayLoop(params: {
   } finally {
     await lock?.release();
     cleanupSignals();
+    setEbadfRecoveryCallback(null);
+    stopSpawnWatchdog();
   }
 }

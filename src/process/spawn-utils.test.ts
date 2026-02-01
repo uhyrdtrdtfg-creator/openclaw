@@ -1,8 +1,8 @@
 import type { ChildProcess } from "node:child_process";
 import { EventEmitter } from "node:events";
 import { PassThrough } from "node:stream";
-import { describe, expect, it, vi } from "vitest";
-import { spawnWithFallback } from "./spawn-utils.js";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { __ebadfTesting, setEbadfRecoveryCallback, spawnWithFallback } from "./spawn-utils.js";
 
 function createStubChild() {
   const child = new EventEmitter() as ChildProcess;
@@ -59,5 +59,122 @@ describe("spawnWithFallback", () => {
       }),
     ).rejects.toThrow(/ENOENT/);
     expect(spawnMock).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe("EBADF auto-recovery", () => {
+  beforeEach(() => {
+    __ebadfTesting.reset();
+  });
+
+  afterEach(() => {
+    __ebadfTesting.reset();
+  });
+
+  it("triggers recovery callback after consecutive EBADF errors", async () => {
+    const recoveryCallback = vi.fn();
+    setEbadfRecoveryCallback(recoveryCallback);
+
+    // Create mock that always fails with EBADF (no fallback)
+    const spawnMock = vi.fn().mockImplementation(() => {
+      const err = new Error("spawn EBADF");
+      (err as NodeJS.ErrnoException).code = "EBADF";
+      throw err;
+    });
+
+    // Trigger 3 EBADF errors (threshold)
+    for (let i = 0; i < 3; i++) {
+      try {
+        await spawnWithFallback({
+          argv: ["test"],
+          options: { stdio: ["pipe", "pipe", "pipe"] },
+          fallbacks: [], // No fallbacks, will throw on first EBADF
+          spawnImpl: spawnMock,
+        });
+      } catch {
+        // Expected to fail
+      }
+    }
+
+    expect(recoveryCallback).toHaveBeenCalledTimes(1);
+  });
+
+  it("does not trigger recovery before threshold is reached", async () => {
+    const recoveryCallback = vi.fn();
+    setEbadfRecoveryCallback(recoveryCallback);
+
+    const spawnMock = vi.fn().mockImplementation(() => {
+      const err = new Error("spawn EBADF");
+      (err as NodeJS.ErrnoException).code = "EBADF";
+      throw err;
+    });
+
+    // Only 2 EBADF errors (below threshold of 3)
+    for (let i = 0; i < 2; i++) {
+      try {
+        await spawnWithFallback({
+          argv: ["test"],
+          options: { stdio: ["pipe", "pipe", "pipe"] },
+          fallbacks: [],
+          spawnImpl: spawnMock,
+        });
+      } catch {
+        // Expected to fail
+      }
+    }
+
+    expect(recoveryCallback).not.toHaveBeenCalled();
+  });
+
+  it("resets counter on successful spawn", async () => {
+    const recoveryCallback = vi.fn();
+    setEbadfRecoveryCallback(recoveryCallback);
+
+    const failingMock = vi.fn().mockImplementation(() => {
+      const err = new Error("spawn EBADF");
+      (err as NodeJS.ErrnoException).code = "EBADF";
+      throw err;
+    });
+
+    const succeedingMock = vi.fn().mockImplementation(() => createStubChild());
+
+    // 2 EBADF errors
+    for (let i = 0; i < 2; i++) {
+      try {
+        await spawnWithFallback({
+          argv: ["test"],
+          options: { stdio: ["pipe", "pipe", "pipe"] },
+          fallbacks: [],
+          spawnImpl: failingMock,
+        });
+      } catch {
+        // Expected
+      }
+    }
+
+    // Successful spawn resets counter
+    await spawnWithFallback({
+      argv: ["test"],
+      options: { stdio: ["pipe", "pipe", "pipe"] },
+      fallbacks: [],
+      spawnImpl: succeedingMock,
+    });
+
+    // 2 more EBADF errors (total should be 2, not 4)
+    for (let i = 0; i < 2; i++) {
+      try {
+        await spawnWithFallback({
+          argv: ["test"],
+          options: { stdio: ["pipe", "pipe", "pipe"] },
+          fallbacks: [],
+          spawnImpl: failingMock,
+        });
+      } catch {
+        // Expected
+      }
+    }
+
+    // Should not have triggered (only 2 consecutive, not 3)
+    expect(recoveryCallback).not.toHaveBeenCalled();
   });
 });

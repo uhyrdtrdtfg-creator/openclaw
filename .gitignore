@@ -123,3 +123,6 @@ dist/protocol.schema.json
 # Synthing
 **/.stfolder/
 .dev-state
+
+# Local claude preferences
+CLAUDE.local.md

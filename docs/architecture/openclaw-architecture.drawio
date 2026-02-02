@@ -1,0 +1,469 @@
+<mxfile host="app.diagrams.net" modified="2026-01-31T00:00:00.000Z" agent="Claude Code" version="22.0.0">
+  <diagram name="OpenClaw Architecture" id="openclaw-arch">
+    <mxGraphModel dx="1422" dy="794" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1200" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- Title -->
+        <mxCell id="title" value="OpenClaw Platform Architecture" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=24;fontStyle=1;fontColor=#333333;" vertex="1" parent="1">
+          <mxGeometry x="550" y="20" width="400" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- Entry Point Layer -->
+        <mxCell id="entry-group" value="Entry Points" style="swimlane;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=14;fontStyle=1;startSize=30;" vertex="1" parent="1">
+          <mxGeometry x="40" y="80" width="1420" height="100" as="geometry" />
+        </mxCell>
+
+        <mxCell id="cli-entry" value="CLI Entry&#xa;(entry.ts)&#xa;Process Init" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;" vertex="1" parent="entry-group">
+          <mxGeometry x="20" y="40" width="120" height="50" as="geometry" />
+        </mxCell>
+
+        <mxCell id="main-index" value="Main Index&#xa;(index.ts)&#xa;CLI Program Builder" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;" vertex="1" parent="entry-group">
+          <mxGeometry x="160" y="40" width="130" height="50" as="geometry" />
+        </mxCell>
+
+        <mxCell id="command-registry" value="Command Registry&#xa;(program/command-registry.ts)&#xa;All CLI Commands" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;" vertex="1" parent="entry-group">
+          <mxGeometry x="310" y="40" width="160" height="50" as="geometry" />
+        </mxCell>
+
+        <mxCell id="deps" value="Dependencies&#xa;(deps.ts)&#xa;DI Container" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;" vertex="1" parent="entry-group">
+          <mxGeometry x="490" y="40" width="120" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- Commands -->
+        <mxCell id="cmd-agent" value="agent" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=10;" vertex="1" parent="entry-group">
+          <mxGeometry x="640" y="40" width="60" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="cmd-send" value="send" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=10;" vertex="1" parent="entry-group">
+          <mxGeometry x="710" y="40" width="60" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="cmd-gateway" value="gateway" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=10;" vertex="1" parent="entry-group">
+          <mxGeometry x="780" y="40" width="60" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="cmd-config" value="config" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=10;" vertex="1" parent="entry-group">
+          <mxGeometry x="850" y="40" width="60" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="cmd-channels" value="channels" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=10;" vertex="1" parent="entry-group">
+          <mxGeometry x="920" y="40" width="60" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="cmd-onboard" value="onboard" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=10;" vertex="1" parent="entry-group">
+          <mxGeometry x="640" y="65" width="60" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="cmd-browser" value="browser" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=10;" vertex="1" parent="entry-group">
+          <mxGeometry x="710" y="65" width="60" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="cmd-login" value="login" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=10;" vertex="1" parent="entry-group">
+          <mxGeometry x="780" y="65" width="60" height="25" as="geometry" />
+        </mxCell>
+
+        <!-- Clients Box -->
+        <mxCell id="clients-box" value="Clients" style="swimlane;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=11;startSize=20;" vertex="1" parent="entry-group">
+          <mxGeometry x="1020" y="30" width="380" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="client-ios" value="iOS App" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=10;" vertex="1" parent="clients-box">
+          <mxGeometry x="10" y="25" width="60" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="client-android" value="Android" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=10;" vertex="1" parent="clients-box">
+          <mxGeometry x="80" y="25" width="60" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="client-macos" value="macOS" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=10;" vertex="1" parent="clients-box">
+          <mxGeometry x="150" y="25" width="60" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="client-web" value="Web UI" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=10;" vertex="1" parent="clients-box">
+          <mxGeometry x="220" y="25" width="60" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="client-cli" value="CLI" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=10;" vertex="1" parent="clients-box">
+          <mxGeometry x="290" y="25" width="60" height="30" as="geometry" />
+        </mxCell>
+
+        <!-- Gateway Server Layer -->
+        <mxCell id="gateway-group" value="Gateway Server (src/gateway/) - WebSocket Port 18789" style="swimlane;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=14;fontStyle=1;startSize=30;" vertex="1" parent="1">
+          <mxGeometry x="40" y="200" width="1420" height="140" as="geometry" />
+        </mxCell>
+
+        <mxCell id="server-impl" value="Server Implementation&#xa;(server.impl.ts)&#xa;- Init channels&#xa;- Manage lanes&#xa;- Broadcast events" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=10;" vertex="1" parent="gateway-group">
+          <mxGeometry x="20" y="40" width="150" height="90" as="geometry" />
+        </mxCell>
+
+        <mxCell id="channel-manager" value="Channel Manager&#xa;(server-channels.ts)&#xa;- Lifecycle hooks&#xa;- Multi-account&#xa;- Plugin loading" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=10;" vertex="1" parent="gateway-group">
+          <mxGeometry x="190" y="40" width="150" height="90" as="geometry" />
+        </mxCell>
+
+        <mxCell id="event-handler" value="Agent Event Handler&#xa;(server-chat.ts)&#xa;- Run registry&#xa;- Real-time deltas&#xa;- Streaming" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=10;" vertex="1" parent="gateway-group">
+          <mxGeometry x="360" y="40" width="150" height="90" as="geometry" />
+        </mxCell>
+
+        <mxCell id="http-ws-server" value="HTTP/WS Server&#xa;(server-http.ts)&#xa;- Hono-based&#xa;- Device auth&#xa;- Control UI" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=10;" vertex="1" parent="gateway-group">
+          <mxGeometry x="530" y="40" width="150" height="90" as="geometry" />
+        </mxCell>
+
+        <mxCell id="server-methods" value="RPC Methods&#xa;(server-methods.ts)&#xa;- chat.send/stream/abort&#xa;- pairing.request&#xa;- browser automation" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=10;" vertex="1" parent="gateway-group">
+          <mxGeometry x="700" y="40" width="160" height="90" as="geometry" />
+        </mxCell>
+
+        <!-- Protocol Box -->
+        <mxCell id="protocol-box" value="WebSocket Protocol" style="swimlane;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=11;startSize=20;" vertex="1" parent="gateway-group">
+          <mxGeometry x="880" y="40" width="250" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="proto-hello" value="HELLO" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=10;" vertex="1" parent="protocol-box">
+          <mxGeometry x="10" y="25" width="50" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="proto-request" value="REQUEST" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=10;" vertex="1" parent="protocol-box">
+          <mxGeometry x="70" y="25" width="55" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="proto-response" value="RESPONSE" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=10;" vertex="1" parent="protocol-box">
+          <mxGeometry x="135" y="25" width="55" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="proto-event" value="EVENT" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=10;" vertex="1" parent="protocol-box">
+          <mxGeometry x="200" y="25" width="40" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="proto-events" value="agent.start | agent.delta | agent.end" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;" vertex="1" parent="protocol-box">
+          <mxGeometry x="10" y="55" width="230" height="20" as="geometry" />
+        </mxCell>
+
+        <!-- Open Responses API -->
+        <mxCell id="openapi" value="OpenAI&#xa;/OpenResponses&#xa;API" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=10;" vertex="1" parent="gateway-group">
+          <mxGeometry x="1150" y="40" width="90" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- Middle Processing Layer -->
+        <mxCell id="processing-group" value="Message Processing Layer" style="swimlane;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=14;fontStyle=1;startSize=30;" vertex="1" parent="1">
+          <mxGeometry x="40" y="360" width="1420" height="160" as="geometry" />
+        </mxCell>
+
+        <!-- Channel System -->
+        <mxCell id="channels-box" value="Channel System (src/channels/)" style="swimlane;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;startSize=25;" vertex="1" parent="processing-group">
+          <mxGeometry x="20" y="35" width="400" height="115" as="geometry" />
+        </mxCell>
+
+        <mxCell id="ch-telegram" value="Telegram&#xa;(GrammyJS)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=9;" vertex="1" parent="channels-box">
+          <mxGeometry x="10" y="30" width="60" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="ch-discord" value="Discord&#xa;(Discord.js)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=9;" vertex="1" parent="channels-box">
+          <mxGeometry x="80" y="30" width="60" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="ch-slack" value="Slack&#xa;(Bolt)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=9;" vertex="1" parent="channels-box">
+          <mxGeometry x="150" y="30" width="55" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="ch-signal" value="Signal&#xa;(libsignal)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=9;" vertex="1" parent="channels-box">
+          <mxGeometry x="215" y="30" width="55" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="ch-imessage" value="iMessage&#xa;(macOS)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=9;" vertex="1" parent="channels-box">
+          <mxGeometry x="280" y="30" width="55" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="ch-whatsapp" value="WhatsApp&#xa;(Baileys)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=9;" vertex="1" parent="channels-box">
+          <mxGeometry x="10" y="70" width="60" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="ch-line" value="Line&#xa;(Bot SDK)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=9;" vertex="1" parent="channels-box">
+          <mxGeometry x="80" y="70" width="60" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="ch-ext" value="Extensions&#xa;Teams/Matrix/&#xa;Zalo/Voice" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=9;" vertex="1" parent="channels-box">
+          <mxGeometry x="150" y="70" width="70" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="ch-dock" value="Channel Dock&#xa;(capabilities)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=9;" vertex="1" parent="channels-box">
+          <mxGeometry x="230" y="70" width="80" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="ch-monitor" value="Monitor&#xa;(inbound)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=9;" vertex="1" parent="channels-box">
+          <mxGeometry x="320" y="70" width="70" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="ch-plugin" value="Plugin&#xa;System" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=9;" vertex="1" parent="channels-box">
+          <mxGeometry x="345" y="30" width="45" height="35" as="geometry" />
+        </mxCell>
+
+        <!-- Routing System -->
+        <mxCell id="routing-box" value="Routing System (src/routing/)" style="swimlane;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12;startSize=25;" vertex="1" parent="processing-group">
+          <mxGeometry x="440" y="35" width="240" height="115" as="geometry" />
+        </mxCell>
+
+        <mxCell id="rt-resolve" value="resolve-route.ts&#xa;- Peer binding&#xa;- Guild binding&#xa;- Account binding&#xa;- Default agent" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=9;align=left;spacingLeft=5;" vertex="1" parent="routing-box">
+          <mxGeometry x="10" y="30" width="100" height="75" as="geometry" />
+        </mxCell>
+
+        <mxCell id="rt-session" value="session-key.ts&#xa;- main&#xa;- per-peer&#xa;- per-channel-peer&#xa;- per-account-ch-peer" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=9;align=left;spacingLeft=5;" vertex="1" parent="routing-box">
+          <mxGeometry x="120" y="30" width="110" height="75" as="geometry" />
+        </mxCell>
+
+        <!-- Auto-Reply System -->
+        <mxCell id="autoreply-box" value="Auto-Reply System (src/auto-reply/)" style="swimlane;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=12;startSize=25;" vertex="1" parent="processing-group">
+          <mxGeometry x="700" y="35" width="340" height="115" as="geometry" />
+        </mxCell>
+
+        <mxCell id="ar-getreply" value="get-reply.ts&#xa;Main Processing Flow" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=9;" vertex="1" parent="autoreply-box">
+          <mxGeometry x="10" y="30" width="100" height="35" as="geometry" />
+        </mxCell>
+
+        <mxCell id="ar-directives" value="Directives&#xa;!think !execute&#xa;!verbose" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=9;" vertex="1" parent="autoreply-box">
+          <mxGeometry x="120" y="30" width="80" height="35" as="geometry" />
+        </mxCell>
+
+        <mxCell id="ar-media" value="Media&#xa;Understanding" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=9;" vertex="1" parent="autoreply-box">
+          <mxGeometry x="210" y="30" width="60" height="35" as="geometry" />
+        </mxCell>
+
+        <mxCell id="ar-link" value="Link&#xa;Understanding" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=9;" vertex="1" parent="autoreply-box">
+          <mxGeometry x="280" y="30" width="55" height="35" as="geometry" />
+        </mxCell>
+
+        <mxCell id="ar-template" value="templating.ts&#xa;(MsgContext)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=9;" vertex="1" parent="autoreply-box">
+          <mxGeometry x="10" y="70" width="80" height="35" as="geometry" />
+        </mxCell>
+
+        <mxCell id="ar-cmdauth" value="Command&#xa;Authorization" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=9;" vertex="1" parent="autoreply-box">
+          <mxGeometry x="100" y="70" width="70" height="35" as="geometry" />
+        </mxCell>
+
+        <mxCell id="ar-typing" value="Typing&#xa;Indicators" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=9;" vertex="1" parent="autoreply-box">
+          <mxGeometry x="180" y="70" width="60" height="35" as="geometry" />
+        </mxCell>
+
+        <mxCell id="ar-tokens" value="Silent Reply&#xa;Token" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=9;" vertex="1" parent="autoreply-box">
+          <mxGeometry x="250" y="70" width="60" height="35" as="geometry" />
+        </mxCell>
+
+        <!-- Outbound -->
+        <mxCell id="outbound-box" value="Outbound&#xa;(infra/outbound)" style="swimlane;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=11;startSize=35;" vertex="1" parent="processing-group">
+          <mxGeometry x="1060" y="35" width="100" height="115" as="geometry" />
+        </mxCell>
+        <mxCell id="ob-resolve" value="Target&#xa;Resolution" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=9;" vertex="1" parent="outbound-box">
+          <mxGeometry x="10" y="45" width="80" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="ob-format" value="Reply&#xa;Formatting" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=9;" vertex="1" parent="outbound-box">
+          <mxGeometry x="10" y="80" width="80" height="30" as="geometry" />
+        </mxCell>
+
+        <!-- Sessions -->
+        <mxCell id="sessions-box" value="Sessions&#xa;(src/sessions)" style="swimlane;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;startSize=35;" vertex="1" parent="processing-group">
+          <mxGeometry x="1180" y="35" width="100" height="115" as="geometry" />
+        </mxCell>
+        <mxCell id="sess-over" value="Overrides" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=9;" vertex="1" parent="sessions-box">
+          <mxGeometry x="10" y="45" width="80" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="sess-policy" value="Send Policy" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=9;" vertex="1" parent="sessions-box">
+          <mxGeometry x="10" y="75" width="80" height="25" as="geometry" />
+        </mxCell>
+
+        <!-- Agent System Layer -->
+        <mxCell id="agent-group" value="Agent System (src/agents/)" style="swimlane;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=14;fontStyle=1;startSize=30;" vertex="1" parent="1">
+          <mxGeometry x="40" y="540" width="1420" height="180" as="geometry" />
+        </mxCell>
+
+        <!-- Pi Embedded Runner -->
+        <mxCell id="pi-runner-box" value="Pi Embedded Runner (pi-embedded-runner/)" style="swimlane;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;startSize=25;" vertex="1" parent="agent-group">
+          <mxGeometry x="20" y="40" width="500" height="130" as="geometry" />
+        </mxCell>
+
+        <mxCell id="pi-run" value="run.ts&#xa;Main Agent Loop" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=10;" vertex="1" parent="pi-runner-box">
+          <mxGeometry x="10" y="30" width="100" height="40" as="geometry" />
+        </mxCell>
+
+        <mxCell id="pi-auth" value="Auth Profiles&#xa;- API key rotation&#xa;- Rate limiting&#xa;- Cooldown mgmt" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=9;align=left;spacingLeft=5;" vertex="1" parent="pi-runner-box">
+          <mxGeometry x="120" y="30" width="90" height="55" as="geometry" />
+        </mxCell>
+
+        <mxCell id="pi-model" value="Model Fallback&#xa;Chains" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=10;" vertex="1" parent="pi-runner-box">
+          <mxGeometry x="220" y="30" width="80" height="40" as="geometry" />
+        </mxCell>
+
+        <mxCell id="pi-thinking" value="Thinking/&#xa;Reasoning&#xa;Extraction" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=10;" vertex="1" parent="pi-runner-box">
+          <mxGeometry x="310" y="30" width="80" height="55" as="geometry" />
+        </mxCell>
+
+        <mxCell id="pi-compact" value="Session&#xa;Compaction" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=10;" vertex="1" parent="pi-runner-box">
+          <mxGeometry x="400" y="30" width="80" height="40" as="geometry" />
+        </mxCell>
+
+        <mxCell id="pi-core" value="@mariozechner/pi-agent-core (Claude AI Framework)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=10;fontStyle=2;" vertex="1" parent="pi-runner-box">
+          <mxGeometry x="10" y="95" width="470" height="25" as="geometry" />
+        </mxCell>
+
+        <!-- Pi Tools -->
+        <mxCell id="pi-tools-box" value="Pi Tools (pi-tools.ts)" style="swimlane;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;startSize=25;" vertex="1" parent="agent-group">
+          <mxGeometry x="540" y="40" width="280" height="130" as="geometry" />
+        </mxCell>
+
+        <mxCell id="tool-bash" value="Bash&#xa;Execution" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=10;" vertex="1" parent="pi-tools-box">
+          <mxGeometry x="10" y="30" width="60" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="tool-browser" value="Browser&#xa;(Playwright)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=10;" vertex="1" parent="pi-tools-box">
+          <mxGeometry x="80" y="30" width="60" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="tool-canvas" value="Canvas&#xa;Drawing" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=10;" vertex="1" parent="pi-tools-box">
+          <mxGeometry x="150" y="30" width="55" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="tool-fs" value="File&#xa;System" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=10;" vertex="1" parent="pi-tools-box">
+          <mxGeometry x="215" y="30" width="55" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="tool-policy" value="Tool Policies (allowlist/denylist)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=10;" vertex="1" parent="pi-tools-box">
+          <mxGeometry x="10" y="80" width="180" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="tool-approval" value="Exec&#xa;Approval" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=10;" vertex="1" parent="pi-tools-box">
+          <mxGeometry x="200" y="80" width="60" height="30" as="geometry" />
+        </mxCell>
+
+        <!-- Agent Management -->
+        <mxCell id="agent-mgmt-box" value="Agent Management" style="swimlane;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=12;startSize=25;" vertex="1" parent="agent-group">
+          <mxGeometry x="840" y="40" width="280" height="130" as="geometry" />
+        </mxCell>
+
+        <mxCell id="agent-scope" value="agent-scope.ts&#xa;- Directory resolution&#xa;- Agent listing&#xa;- Workspace mgmt" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=9;align=left;spacingLeft=5;" vertex="1" parent="agent-mgmt-box">
+          <mxGeometry x="10" y="30" width="100" height="55" as="geometry" />
+        </mxCell>
+
+        <mxCell id="cli-runner" value="cli-runner.ts&#xa;- Subprocess spawn&#xa;- IPC communication&#xa;- Timeout mgmt" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=9;align=left;spacingLeft=5;" vertex="1" parent="agent-mgmt-box">
+          <mxGeometry x="120" y="30" width="100" height="55" as="geometry" />
+        </mxCell>
+
+        <mxCell id="skills-reg" value="Skills Registration" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=10;" vertex="1" parent="agent-mgmt-box">
+          <mxGeometry x="10" y="95" width="100" height="25" as="geometry" />
+        </mxCell>
+
+        <mxCell id="identity-links" value="Identity Links" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=10;" vertex="1" parent="agent-mgmt-box">
+          <mxGeometry x="120" y="95" width="80" height="25" as="geometry" />
+        </mxCell>
+
+        <!-- Claude API -->
+        <mxCell id="claude-api" value="Claude API&#xa;(Anthropic)" style="ellipse;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;fontStyle=1;" vertex="1" parent="agent-group">
+          <mxGeometry x="1150" y="55" width="100" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- Configuration & Storage Layer -->
+        <mxCell id="config-group" value="Configuration &amp; Storage (src/config/)" style="swimlane;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=14;fontStyle=1;startSize=30;" vertex="1" parent="1">
+          <mxGeometry x="40" y="740" width="1420" height="120" as="geometry" />
+        </mxCell>
+
+        <mxCell id="config-main" value="config.ts&#xa;~/.openclaw/config.yml&#xa;- agents&#xa;- channels&#xa;- gateway&#xa;- hooks" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=10;align=left;spacingLeft=5;" vertex="1" parent="config-group">
+          <mxGeometry x="20" y="40" width="140" height="70" as="geometry" />
+        </mxCell>
+
+        <mxCell id="session-store" value="sessions.ts&#xa;~/.openclaw/sessions/&#xa;- JSONL logs&#xa;- Per agent/sessionKey&#xa;- History persistence" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=10;align=left;spacingLeft=5;" vertex="1" parent="config-group">
+          <mxGeometry x="180" y="40" width="140" height="70" as="geometry" />
+        </mxCell>
+
+        <mxCell id="plugin-config" value="plugin-config.ts&#xa;Plugin Enablement" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=10;" vertex="1" parent="config-group">
+          <mxGeometry x="340" y="40" width="120" height="40" as="geometry" />
+        </mxCell>
+
+        <mxCell id="creds" value="credentials/&#xa;~/.openclaw/credentials/&#xa;Web provider creds" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=10;align=left;spacingLeft=5;" vertex="1" parent="config-group">
+          <mxGeometry x="480" y="40" width="130" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- Infra -->
+        <mxCell id="infra-box" value="Infrastructure (src/infra/)" style="swimlane;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;startSize=20;" vertex="1" parent="config-group">
+          <mxGeometry x="630" y="35" width="420" height="75" as="geometry" />
+        </mxCell>
+
+        <mxCell id="inf-device" value="Device&#xa;Identity" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=9;" vertex="1" parent="infra-box">
+          <mxGeometry x="10" y="25" width="55" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="inf-pair" value="Device&#xa;Pairing" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=9;" vertex="1" parent="infra-box">
+          <mxGeometry x="75" y="25" width="55" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="inf-bonjour" value="mDNS&#xa;Bonjour" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=9;" vertex="1" parent="infra-box">
+          <mxGeometry x="140" y="25" width="55" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="inf-tailnet" value="Tailscale&#xa;Integration" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=9;" vertex="1" parent="infra-box">
+          <mxGeometry x="205" y="25" width="55" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="inf-tls" value="TLS&#xa;Verify" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=9;" vertex="1" parent="infra-box">
+          <mxGeometry x="270" y="25" width="45" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="inf-activity" value="Channel&#xa;Activity" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=9;" vertex="1" parent="infra-box">
+          <mxGeometry x="325" y="25" width="50" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- Logging -->
+        <mxCell id="logging" value="Logging&#xa;(src/logging)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=10;" vertex="1" parent="config-group">
+          <mxGeometry x="1070" y="40" width="80" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- Media -->
+        <mxCell id="media" value="Media Pipeline&#xa;(src/media)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=10;" vertex="1" parent="config-group">
+          <mxGeometry x="1170" y="40" width="80" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- Flow Arrows -->
+        <!-- Entry to Gateway -->
+        <mxCell id="flow1" value="" style="endArrow=classic;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.15;entryY=0;entryDx=0;entryDy=0;strokeWidth=2;strokeColor=#666666;" edge="1" parent="1" source="entry-group" target="gateway-group">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="700" y="500" as="sourcePoint" />
+            <mxPoint x="750" y="450" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Gateway to Processing -->
+        <mxCell id="flow2" value="" style="endArrow=classic;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeWidth=2;strokeColor=#666666;" edge="1" parent="1" source="gateway-group" target="processing-group">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="700" y="500" as="sourcePoint" />
+            <mxPoint x="750" y="450" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Processing to Agent -->
+        <mxCell id="flow3" value="" style="endArrow=classic;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeWidth=2;strokeColor=#666666;" edge="1" parent="1" source="processing-group" target="agent-group">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="700" y="600" as="sourcePoint" />
+            <mxPoint x="750" y="550" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Agent to Config -->
+        <mxCell id="flow4" value="" style="endArrow=classic;startArrow=classic;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeWidth=2;strokeColor=#666666;" edge="1" parent="1" source="agent-group" target="config-group">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="700" y="700" as="sourcePoint" />
+            <mxPoint x="750" y="650" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Clients to Gateway -->
+        <mxCell id="flow5" value="WebSocket" style="endArrow=classic;startArrow=classic;html=1;rounded=0;strokeWidth=2;strokeColor=#82b366;dashed=1;exitX=0.85;exitY=1;exitDx=0;exitDy=0;entryX=0.85;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="entry-group" target="gateway-group">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="1300" y="180" as="sourcePoint" />
+            <mxPoint x="1300" y="200" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Message Flow Description -->
+        <mxCell id="flow-desc" value="Message Flow: Platform → Channel Monitor → Auto-Reply → Routing → Agent → Reply → Platform" style="text;html=1;strokeColor=#b85450;fillColor=#f8cecc;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=1;fontSize=11;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="880" width="700" height="30" as="geometry" />
+        </mxCell>
+
+        <!-- Legend -->
+        <mxCell id="legend" value="Legend" style="swimlane;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=12;startSize=20;" vertex="1" parent="1">
+          <mxGeometry x="780" y="880" width="680" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="leg-entry" value="Entry" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=9;" vertex="1" parent="legend">
+          <mxGeometry x="10" y="30" width="50" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="leg-gateway" value="Gateway" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=9;" vertex="1" parent="legend">
+          <mxGeometry x="70" y="30" width="55" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="leg-channel" value="Channel" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=9;" vertex="1" parent="legend">
+          <mxGeometry x="135" y="30" width="50" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="leg-routing" value="Routing" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=9;" vertex="1" parent="legend">
+          <mxGeometry x="195" y="30" width="50" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="leg-autoreply" value="Auto-Reply" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=9;" vertex="1" parent="legend">
+          <mxGeometry x="255" y="30" width="60" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="leg-agent" value="Agent" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=9;" vertex="1" parent="legend">
+          <mxGeometry x="325" y="30" width="45" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="leg-tools" value="Tools" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=9;" vertex="1" parent="legend">
+          <mxGeometry x="380" y="30" width="45" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="leg-config" value="Config" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=9;" vertex="1" parent="legend">
+          <mxGeometry x="435" y="30" width="45" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="leg-ext" value="Extension" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=9;" vertex="1" parent="legend">
+          <mxGeometry x="490" y="30" width="55" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="leg-ext2" value="External" style="ellipse;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=9;" vertex="1" parent="legend">
+          <mxGeometry x="555" y="30" width="55" height="25" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
